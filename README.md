@@ -1,8 +1,8 @@
 # Cheatsheet
 
 https://kubernetes.io/docs/reference/kubectl/cheatsheet/
-```
 
+```
 kubectl get <pods | pvc | svc | ns | ... > -A -o wide
 
 // all objects from a namespace
@@ -87,7 +87,8 @@ psql -U user -d wegas_dev
 kubectl get networkpolicy -n <>
 kubectl describe networkpolicy -n wegas allow-egress-traffic
 ```
-## GRAFANA
+## GRAFANA
+
 `kubectl port-forward -n monitoring svc/prom-stack-grafana 8090:80`
 
 ## HELM
