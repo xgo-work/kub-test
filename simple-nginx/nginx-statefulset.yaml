@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: xgo-test
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: nginx
+  namespace: xgo-test
+spec:
+  serviceName: "nginx-headless"  # Required for stable DNS (see headless service below)
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+---
+# Headless service for DNS internal adressing
+# Not strictly necessary if no internal adressing is needed
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-headless
+  namespace: xgo-test
+spec:
+  clusterIP: None  # Make it headless
+  selector:
+    app: nginx
+  ports:
+  - port: 80
+    targetPort: 80
+---
+# Optional standard ClusterIP service for access
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+  namespace: xgo-test
+spec:
+  selector:
+    app: nginx
+  ports:
+  - port: 80
+    targetPort: 80
+  type: ClusterIP

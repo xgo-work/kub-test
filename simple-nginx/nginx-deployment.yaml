@@ -1,0 +1,42 @@
+# Create a new namespace to isolate the resources
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: xgo-test
+---
+# Deployment to manage 2 replicas of the NGINX web server
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  namespace: xgo-test  # Deploy this into the xgo-test namespace
+spec:
+  replicas: 2  # Run 2 instances (pods) of NGINX
+  selector:
+    matchLabels:
+      app: nginx  # Label used to match pods with this deployment
+  template:
+    metadata:
+      labels:
+        app: nginx  # Label applied to the pods; must match the selector
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest  # Use the latest official NGINX image
+        ports:
+        - containerPort: 80  # Expose port 80 inside the container
+---
+# Service to expose the NGINX pods within the cluster
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+  namespace: xgo-test  # Place the service in the same namespace
+spec:
+  selector:
+    app: nginx  # Route traffic to pods labeled with app=nginx
+  ports:
+  - protocol: TCP
+    port: 80         # Port the service will expose
+    targetPort: 80   # Port on the container to forward traffic to
+  type: ClusterIP    # Internal-only service accessible within the cluster
