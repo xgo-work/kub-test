@@ -8,7 +8,7 @@ kubectl apply -f nginx-deployment.yaml
 //local port forward on 3000
 kubectl port-forward svc/nginx-service 3000:80 -n xgo-test
 
-// => http://localhost:8080
+// => http://localhost:3000
 
 // use curl to spam a few requests
 for i in {1..10}; do curl -s http://localhost:3000 --header "Connection: close" | grep hostname; done
